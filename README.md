@@ -114,6 +114,25 @@ npm test
 npm run lint
 ```
 
+## TODO
+
+### Content Structure Migration
+- [ ] Migrate from `docs/` to `content/` folder structure
+- [ ] Add frontmatter support for chapter metadata:
+  - `title`: Chapter title
+  - `pov`: Point of view character (for multi-POV timelines)
+  - `number`: Chapter number
+  - `episodeNumber`: Episode number
+  - `timelineId`: Timeline identifier
+- [ ] Parse frontmatter using gray-matter or similar
+- [ ] Update path resolution to use `content/timeline/chapters/` instead of `docs/timeline/chapters/`
+- [ ] Extract title and POV from frontmatter instead of markdown headers
+
+### Template Improvements
+- [ ] Add support for custom metadata in frontmatter
+- [ ] Improve multi-language support
+- [ ] Add more page format options (letter, custom sizes)
+
 ## License
 
 MIT
