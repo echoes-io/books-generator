@@ -1,0 +1,87 @@
+\documentclass[12pt,a5paper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+% Page geometry
+\geometry{
+  a5paper,
+  margin=2cm,
+  bindingoffset=0.5cm
+}
+
+% Timeline colors - Eros (Burgundy)
+\definecolor{erosburgundy}{HTML}{800020}
+\definecolor{erosdark}{HTML}{4A0012}
+\definecolor{eroslight}{HTML}{FFF0F5}
+
+% Fonts
+\usepackage{libertine}
+\usepackage[libertine]{newtxmath}
+
+% Headers and footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\textcolor{erosdark}{\leftmark}}
+\fancyhead[RO]{\textcolor{erosdark}{\rightmark}}
+\fancyfoot[C]{\textcolor{erosburgundy}{\thepage}}
+
+% Chapter formatting
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{erosdark}}
+  {\chaptertitlename\ \thechapter}{20pt}{\Huge\color{erosburgundy}}
+
+% Custom commands
+\newcommand{\echochapter}[4]{
+  \chapter{#1}
+  \begin{flushright}
+    \textit{\textcolor{erosdark}{#2}} % POV
+  \end{flushright}
+  \vspace{0.5em}
+  \textcolor{gray}{\small #3} % Location
+  \vspace{1em}
+  
+  #4 % Content
+}
+
+\newcommand{\timelinetitle}[1]{
+  \begin{center}
+    {\Huge\textcolor{erosburgundy}{\textbf{#1}}}\\
+    \vspace{0.5em}
+    {\large\textcolor{erosdark}{Timeline Eros}}\\
+    \vspace{0.2em}
+    {\small\textcolor{gray}{Tales of passion, intensity, and raw emotion}}
+  \end{center}
+}
+
+% Document
+\begin{document}
+
+% Title page
+\thispagestyle{empty}
+\vspace*{2cm}
+\timelinetitle{{{title}}}
+\vfill
+\begin{center}
+  \textcolor{erosdark}{Echoes.io}\\
+  \textcolor{gray}{\small Multi-POV Storytelling Platform}
+\end{center}
+\newpage
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% Chapters
+{{#chapters}}
+\echochapter{{{metadata.title}}}{{{metadata.pov}}}{{{metadata.location}}}{
+{{content}}
+}
+\newpage
+{{/chapters}}
+
+\end{document}
