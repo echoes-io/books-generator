@@ -4,142 +4,99 @@
 
 ## Overview
 
-The Book Generator provides automated LaTeX compilation for Echoes timeline content, enabling professional book publishing with timeline-specific styling and formatting.
+The Book Generator provides automated LaTeX compilation for Echoes timeline content, enabling professional book publishing with the Victoria Regia template.
 
 ## Features
 
-- **Timeline-Specific Templates**: Custom LaTeX templates for each timeline (Anima, Eros, Bloom)
-- **Automated Compilation**: Generate PDF books from markdown content
-- **Chapter Organization**: Respect arc/episode/chapter hierarchy
-- **Metadata Integration**: Use frontmatter for book structure
-- **Custom Styling**: Timeline-aware colors, fonts, and layouts
-- **Multi-Format Output**: PDF, EPUB, and print-ready formats
+- **Victoria Regia Template**: Elegant LaTeX template inspired by golden ratio with Brazilian style
+- **Automated Compilation**: Generate PDF books from markdown content using pandoc
+- **Chapter Organization**: Respect episode/chapter hierarchy
+- **Timeline-Aware Styling**: Custom colors for each timeline (Anima, Eros, Bloom)
+- **Multi-Format Output**: Support for A4 and A5 page formats
 
-## Architecture
+## Installation
 
+```bash
+npm install @echoes-io/books-generator
 ```
-Book Generator
-├── Templates - LaTeX templates for each timeline
-├── Compiler - PDF generation engine
-├── Metadata Parser - Extract book structure from content
-└── Style Engine - Timeline-specific formatting
+
+### Requirements
+
+- Node.js >= 20
+- pandoc
+- LaTeX distribution (pdflatex, xelatex, or lualatex)
+
+On Ubuntu/Debian:
+```bash
+sudo apt-get install pandoc texlive-latex-base texlive-latex-extra texlive-fonts-recommended
 ```
 
 ## Usage
 
-### Basic Book Generation
-
-```typescript
-import { BookGenerator } from '@echoes-io/books-generator';
-
-const generator = new BookGenerator();
-
-// Generate book for entire timeline
-await generator.generateBook({
-  timeline: 'anima',
-  outputPath: './books/anima-complete.pdf',
-  includeArcs: ['matilde', 'anima']
-});
-
-// Generate book for specific arc
-await generator.generateBook({
-  timeline: 'eros',
-  arc: 'ale',
-  outputPath: './books/eros-ale.pdf'
-});
-```
-
-### Custom Templates
-
-```typescript
-// Use custom template
-await generator.generateBook({
-  timeline: 'bloom',
-  template: 'custom-bloom-template.tex',
-  outputPath: './books/bloom-custom.pdf'
-});
-```
-
-## Templates
-
-### Timeline Templates
-
-Each timeline has its own LaTeX template with specific styling:
-
-- **Anima Template**: Sage green palette, gentle typography, growth themes
-- **Eros Template**: Burgundy palette, intense typography, passion themes  
-- **Bloom Template**: Terracotta palette, balanced typography, discovery themes
-
-### Template Structure
-
-```latex
-\documentclass[12pt,a5paper]{book}
-\usepackage[utf8]{inputenc}
-\usepackage{xcolor}
-\usepackage{geometry}
-
-% Timeline-specific colors
-\definecolor{timelinecolor}{HTML}{{{timelineColor}}}
-
-% Chapter formatting
-\newcommand{\echochapter}[3]{
-  \chapter{#1}
-  \textit{#2} % POV
-  \vspace{1em}
-  #3 % Content
-}
-```
-
-## Configuration
-
-```typescript
-const config = {
-  templatesPath: './templates',
-  outputPath: './output',
-  latexEngine: 'xelatex',
-  timelineColors: {
-    anima: '#8FBC8F',    // Sage green
-    eros: '#800020',     // Burgundy
-    bloom: '#CD853F'     // Terracotta
-  }
-};
-```
-
-## Integration
-
-### With Timeline Repositories
-
-Automatically processes content from timeline repositories:
-- `timeline-anima/content/`
-- `timeline-eros/content/`
-- `timeline-bloom/content/`
-
-### With MCP Server
-
-Integrates with `@echoes-io/mcp-server` via `book-generate` tool:
+### CLI
 
 ```bash
-# Generate book via MCP
-q chat "Generate a PDF book for the Anima timeline"
+books-generator <contentPath> <outputPath> <timeline> [episodes] [format]
 ```
 
-### With GitHub Actions
+**Arguments:**
+- `contentPath`: Path to timeline content folder (containing `chapters/` directory)
+- `outputPath`: Output PDF file path
+- `timeline`: Timeline name (`anima`, `eros`, or `bloom`)
+- `episodes`: Optional comma-separated episode numbers (e.g., `"1,2,3"`)
+- `format`: Optional page format (`a4` or `a5`, default: `a4`)
 
-Automated book generation on content updates:
+**Example:**
+```bash
+# Generate book for Bloom timeline, episode 1, A4 format
+books-generator ./docs/bloom ./output/bloom-ep1.pdf bloom "1" a4
 
-```yaml
-name: Generate Books
-on:
-  push:
-    paths: ['content/**/*.md']
-jobs:
-  generate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Generate Books
-        run: npx @echoes-io/books-generator --timeline anima
+# Generate book for all episodes
+books-generator ./docs/eros ./output/eros-complete.pdf eros
 ```
+
+### Programmatic API
+
+```typescript
+import { generateBook } from '@echoes-io/books-generator';
+
+await generateBook({
+  contentPath: './docs/anima',
+  outputPath: './output/anima.pdf',
+  timeline: 'anima',
+  episodes: '1,2,3',
+  format: 'a4'
+});
+```
+
+## Content Structure
+
+Your content folder should follow this structure:
+
+```
+timeline-name/
+└── chapters/
+    ├── ep01-episode-name/
+    │   ├── ep01-ch001-chapter-title.md
+    │   ├── ep01-ch002-chapter-title.md
+    │   └── ...
+    ├── ep02-episode-name/
+    │   └── ...
+    └── ...
+```
+
+## Template
+
+The Victoria Regia template includes:
+
+- **Golden ratio-based layout**: Professional typography and spacing
+- **Timeline-specific colors**: Each timeline has its own color palette
+  - Anima: Sage green (`#4ECDC4`)
+  - Eros: Burgundy (`#D2001F`)
+  - Bloom: Pink (`#FF69B4`)
+- **Elegant frontmatter**: Title page, copyright, preface, table of contents
+- **Chapter decorations**: Ornamental separators and headers
+- **Professional styling**: Optimized for readability
 
 ## Development
 
@@ -153,64 +110,13 @@ npm run build
 # Test
 npm test
 
-# Development mode
-npm run dev
+# Lint
+npm run lint
 ```
 
-## API Reference
+## License
 
-### BookGenerator
-
-Main class for book generation operations.
-
-#### Methods
-
-- `generateBook(options)` - Generate PDF book from timeline content
-- `compileLatex(template, data)` - Compile LaTeX template with data
-- `extractMetadata(contentPath)` - Extract book structure from content
-- `applyTemplate(timeline, data)` - Apply timeline-specific template
-
-### Types
-
-```typescript
-interface BookOptions {
-  timeline: string;
-  arc?: string;
-  episodes?: number[];
-  outputPath: string;
-  template?: string;
-  format?: 'pdf' | 'epub';
-}
-
-interface BookMetadata {
-  title: string;
-  timeline: string;
-  arcs: ArcMetadata[];
-  totalChapters: number;
-  wordCount: number;
-}
-```
-
-## Templates Directory
-
-```
-templates/
-├── anima/
-│   ├── book.tex
-│   ├── chapter.tex
-│   └── styles.sty
-├── eros/
-│   ├── book.tex
-│   ├── chapter.tex
-│   └── styles.sty
-├── bloom/
-│   ├── book.tex
-│   ├── chapter.tex
-│   └── styles.sty
-└── shared/
-    ├── base.tex
-    └── common.sty
-```
+MIT
 
 ---
 

@@ -1,0 +1,88 @@
+% =============================================================================
+% Victoria-Regia book template by @jancarauma
+% 2025 (c) Janderson Gomes
+% For further details, visit: artientista.blogspot.com (Caraumã)
+% 16/06/2025 - amazon brazil
+% =============================================================================
+
+% Document class and layout settings
+\documentclass[12pt,openany]{book}    % Standard book class with 12pt font and chapters starting on any page
+
+% Golden ratio constant for layout calculations
+\newcommand{\goldenratio}{1.618}
+
+% Font encoding ensures proper glyph output
+\usepackage[T1]{fontenc}
+
+% --- Book metadata definitions ---
+\newcommand{\authorname}{$author$}
+% \newcommand{\translatorname}{Janderson Gomes}
+\newcommand{\booktitle}{$title$}
+\newcommand{\subtitle}{$subtitle$}
+\newcommand{\publisher}{$if(publisher)$$publisher$$else$Echoes$endif$}
+\newcommand{\authorfull}{$authorFull$}
+\newcommand{\pubyear}{$year$}
+\newcommand{\contactemail}{$email$}
+\newcommand{\timelinename}{$timeline$}
+\newcommand{\editionyear}{2025}
+% \newcommand{\isbn}{123-456-789-0}
+
+% Additional package imports (layout, styling, utilities)
+% Geometry setup (before loading options.sty)
+$if(geometry)$
+\usepackage[$geometry$paper,top=0.75in,bottom=0.75in,outer=0.75in,inner=0.875in]{geometry}
+$endif$
+
+\usepackage{victoria-regia/misc/options}  % Custom configuration package (margins, headers)
+
+% Timeline color definitions (parametrized)
+$if(timeline-primary)$
+\definecolor{timelineprimary}{HTML}{$timeline-primary$}
+$else$
+\definecolor{timelineprimary}{HTML}{8B008B}
+$endif$
+
+$if(timeline-secondary)$
+\definecolor{timelinesecondary}{HTML}{$timeline-secondary$}
+$else$
+\definecolor{timelinesecondary}{HTML}{320032}
+$endif$
+
+$if(timeline-accent)$
+\definecolor{timelineaccent}{HTML}{$timeline-accent$}
+$else$
+\definecolor{timelineaccent}{HTML}{CBA135}
+$endif$
+
+% Override default colors with timeline colors
+\colorlet{darkmagenta}{timelineprimary}
+\colorlet{ultradarkmagenta}{timelinesecondary}
+\colorlet{customgold}{timelineaccent}
+
+% Pandoc compatibility commands
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document}
+
+% ===== Front Matter =====
+\frontmatter                      % Roman numerals for front matter
+\input{victoria-regia/frontmatter/titlepage}     % Title page layout
+\input{global/copyright/copyright}                         % Global copyright page
+\input{global/prefaces/$timeline$-preface}                % Timeline-specific preface
+\input{victoria-regia/frontmatter/tocpage}       % Table of contents
+
+% ===== Main Content =====
+\mainmatter                       % Switch to Arabic numbering
+\pagestyle{fancy}                 % Fancy headers and footers for chapters
+
+% Chapter inputs
+$body$
+
+% ===== Closing Page =====
+\input{global/closing/closing}
+
+% ===== Back Matter =====
+\backmatter                       % Unnumbered appendices and bibliography
+
+\end{document}

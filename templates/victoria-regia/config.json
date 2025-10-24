@@ -1,0 +1,15 @@
+{
+  "name": "Victoria Regia",
+  "description": "Template elegante ispirato al golden ratio con stile brasiliano",
+  "variables": {
+    "documentclass": "book",
+    "classoption": "12pt,openany",
+    "fontsize": "12pt",
+    "linestretch": "1.3",
+    "geometry": "a4paper",
+    "author": "Zweer"
+  },
+  "pandocArgs": ["--pdf-engine=pdflatex", "--toc", "--toc-depth=1"],
+  "supportedFormats": ["a4", "a5"],
+  "requiredPackages": ["book", "fancyhdr", "geometry", "microtype"]
+}

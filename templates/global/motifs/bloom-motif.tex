@@ -1,0 +1,20 @@
+% =================
+% BLOOM Timeline Motif - Opening Petals (Growth & Transformation)
+% =================
+\begin{scope}[
+        remember picture,
+        overlay,
+        shift={($(current page.center)$)},
+        scale=\scaleFactor
+    ]
+    % Opening flower petals - each petal represents growth
+    \foreach \angle in {0, 60, 120, 180, 240, 300} {
+        \fill[timelineprimary, opacity=0.6]
+            (0,0) -- (\angle-20:1.5) .. controls (\angle:2.2) .. (\angle+20:1.5) -- cycle;
+        \fill[timelinesecondary, opacity=0.7]
+            (0,0) -- (\angle-15:1.0) .. controls (\angle:1.5) .. (\angle+15:1.0) -- cycle;
+    }
+    
+    % Central core - the seed of transformation
+    \fill[timelineaccent, opacity=0.9] (0,0) circle (0.3);
+\end{scope}

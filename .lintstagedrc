@@ -1,8 +1,4 @@
-"*.{ts,tsx}":
-  - "bash -c 'npm test'"
-
 "package.json":
-  - "bash -c 'npm test'"
   - "bash -c 'npm run build'"
   - "bash -c 'npm run lint:lockfile'"
   - "bash -c 'npm run lint:engines'"

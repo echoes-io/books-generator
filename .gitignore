@@ -2,6 +2,9 @@
 *.js
 *.d.ts
 
+# Output
+output/
+
 # Logs
 logs
 *.log

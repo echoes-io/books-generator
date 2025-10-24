@@ -1,0 +1,30 @@
+% =================
+% ANIMA Timeline Motif - Complex Concentric Waves
+% =================
+\begin{scope}[
+        remember picture,
+        overlay,
+        shift={($(current page.center)$)},
+        scale=\scaleFactor
+    ]
+    % Complex concentric emotional waves
+    \foreach \r in {0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1} {
+        \draw[timelineprimary, line width=3pt, opacity=0.6] 
+            (0,0) circle (\r);
+    }
+    
+    % Ripple distortions
+    \foreach \angle in {0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330} {
+        \draw[timelinesecondary, line width=1pt, opacity=0.4]
+            (0,0) -- (\angle:2.3);
+    }
+    
+    % Emotional interference patterns
+    \foreach \i in {0,1,2,3} {
+        \draw[timelineaccent, line width=1pt, opacity=0.5]
+            ({\i*0.6-0.9}, 0) circle ({0.4+\i*0.2});
+    }
+    
+    % Central emotional core
+    \fill[timelineaccent, opacity=0.8] (0,0) circle (0.2);
+\end{scope}
