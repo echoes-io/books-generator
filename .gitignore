@@ -5,6 +5,10 @@
 # Output
 output/
 
+# Test outputs
+test/output/
+*.pdf
+
 # Logs
 logs
 *.log

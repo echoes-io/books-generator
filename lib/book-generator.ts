@@ -3,6 +3,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { ChapterMetadataSchema } from '@echoes-io/models';
+import { parseMarkdown } from '@echoes-io/utils';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -25,16 +28,28 @@ function detectPdfEngine(): string {
   throw new Error('No PDF engine found. Install xelatex, pdflatex, or lualatex');
 }
 
-function collectMarkdownFiles(dir: string): string[] {
+function collectMarkdownFiles(contentPath: string): string[] {
   const files: string[] = [];
-  const items = fs.readdirSync(dir, { withFileTypes: true });
 
-  for (const item of items) {
-    const fullPath = path.join(dir, item.name);
-    if (item.isDirectory()) {
-      files.push(...collectMarkdownFiles(fullPath));
-    } else if (item.isFile() && item.name.endsWith('.md')) {
-      files.push(fullPath);
+  // Scan all arc directories in content/
+  const arcDirs = fs
+    .readdirSync(contentPath, { withFileTypes: true })
+    .filter((item) => item.isDirectory());
+
+  for (const arcDir of arcDirs) {
+    const arcPath = path.join(contentPath, arcDir.name);
+    const episodeDirs = fs
+      .readdirSync(arcPath, { withFileTypes: true })
+      .filter((item) => item.isDirectory() && item.name.match(/^ep\d+/));
+
+    for (const episodeDir of episodeDirs) {
+      const episodePath = path.join(arcPath, episodeDir.name);
+      const chapterFiles = fs
+        .readdirSync(episodePath, { withFileTypes: true })
+        .filter((item) => item.isFile() && item.name.endsWith('.md'))
+        .map((item) => path.join(episodePath, item.name));
+
+      files.push(...chapterFiles);
     }
   }
 
@@ -42,17 +57,17 @@ function collectMarkdownFiles(dir: string): string[] {
 }
 
 function processMarkdownContent(
-  content: string,
+  rawContent: string,
   filePath: string,
   hasMultipleEpisodes: boolean,
   hasMultiplePOVs: boolean,
   chapterNumber: number,
   isFirstChapterOfEpisode: boolean,
 ): string {
-  content = content.replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '');
+  const { metadata, content } = parseMarkdown(rawContent);
 
   // Remove emoji and problematic Unicode characters
-  content = content.replace(
+  let processed = content.replace(
     /[\u{1F000}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2B1C}\u{2B1B}\u{25A0}-\u{25FF}\u{2190}-\u{21FF}\u{1F1E0}-\u{1F1FF}\u{2200}-\u{22FF}]|\u{FE0F}|\u{200D}/gu,
     '',
   );
@@ -60,36 +75,28 @@ function processMarkdownContent(
   const episodeMatch = filePath.match(/ep(\d+)-([^/]+)/);
   if (episodeMatch) {
     const episodeName = episodeMatch[2].replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
-    let processed = content;
 
     if (hasMultipleEpisodes && isFirstChapterOfEpisode) {
       processed = `# ${episodeName}\n\n${processed}`;
     }
 
     const headerLevel = hasMultipleEpisodes ? '##' : '#';
+    const title = metadata.title;
+    const pov = metadata.pov;
 
-    processed = processed.replace(/^# (\d+)\.\s*(.+)$/m, (_, __, titleWithPov) => {
-      const povMatch = titleWithPov.match(/^([^:]+):\s*(.+)$/);
-      if (povMatch && hasMultiplePOVs) {
-        const [, pov, title] = povMatch;
-        return hasMultipleEpisodes
+    const header =
+      hasMultiplePOVs && pov
+        ? hasMultipleEpisodes
           ? `${headerLevel} ${title} _(${pov})_`
-          : `${headerLevel} ${chapterNumber}. ${title} _(${pov})_`;
-      } else if (povMatch) {
-        const title = povMatch[2];
-        return hasMultipleEpisodes
+          : `${headerLevel} ${chapterNumber}. ${title} _(${pov})_`
+        : hasMultipleEpisodes
           ? `${headerLevel} ${title}`
           : `${headerLevel} ${chapterNumber}. ${title}`;
-      }
-      return hasMultipleEpisodes
-        ? `${headerLevel} ${titleWithPov}`
-        : `${headerLevel} ${chapterNumber}. ${titleWithPov}`;
-    });
 
-    content = processed;
+    processed = `${header}\n\n${processed}`;
   }
 
-  return content;
+  return processed;
 }
 
 export async function generateBook(options: BookGeneratorOptions): Promise<void> {
@@ -97,12 +104,11 @@ export async function generateBook(options: BookGeneratorOptions): Promise<void>
 
   console.log(`📚 Generating book for timeline: ${timeline.toUpperCase()}`);
 
-  const chaptersPath = path.join(contentPath, 'chapters');
-  if (!fs.existsSync(chaptersPath)) {
-    throw new Error(`Chapters folder not found: ${chaptersPath}`);
+  if (!fs.existsSync(contentPath)) {
+    throw new Error(`Content folder not found: ${contentPath}`);
   }
 
-  let files = collectMarkdownFiles(chaptersPath);
+  let files = collectMarkdownFiles(contentPath);
 
   if (episodes) {
     const episodeList = episodes.split(',').map((e) => e.trim());
@@ -125,17 +131,17 @@ export async function generateBook(options: BookGeneratorOptions): Promise<void>
     const episodeMatch = filePath.match(/ep(\d+)-([^/]+)/);
     if (episodeMatch) episodeSet.add(episodeMatch[0]);
 
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const povInTitle = content.match(/^# \d+\.\s*([^:]+):/m);
-    const povInLine = content.match(/^# [^:]+\s*\n\s*_\[([^\]]+)\]_/m);
+    const rawContent = fs.readFileSync(filePath, 'utf-8');
+    const { metadata } = parseMarkdown(rawContent);
 
-    if (povInTitle) {
-      const pov = povInTitle[1].trim();
-      if (pov.length <= 10 && /^[A-Z][a-z]+$/.test(pov)) povSet.add(pov);
-    } else if (povInLine) {
-      const pov = povInLine[1].trim();
-      if (pov.length <= 10 && /^[A-Z][a-z]+$/.test(pov)) povSet.add(pov);
+    // Validate metadata
+    try {
+      ChapterMetadataSchema.parse(metadata);
+    } catch (error) {
+      console.warn(`⚠️  Validation warning for ${path.basename(filePath)}:`, error);
     }
+
+    if (metadata.pov) povSet.add(metadata.pov);
   }
 
   const hasMultipleEpisodes = episodeSet.size > 1;
