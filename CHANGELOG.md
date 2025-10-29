@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/echoes-io/books-generator/compare/v1.0.0...v1.0.1) (2025-10-29)
+
+
+### Performance Improvements
+
+* :truck: Moving from `chapter.excerpt` to `chapter.summary` ([4177d8e](https://github.com/echoes-io/books-generator/commit/4177d8ec6fbc76fb3864de1829830d86029444e7))
+
 # 1.0.0 (2025-10-27)
 
 
