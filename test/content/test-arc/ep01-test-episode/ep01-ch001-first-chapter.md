@@ -7,7 +7,7 @@ arc: test-arc
 episode: 1
 part: 1
 chapter: 1
-excerpt: "The beginning of something new."
+summary: "The beginning of something new."
 location: "London"
 ---
 

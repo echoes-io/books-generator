@@ -142,7 +142,7 @@ arc: test-arc
 episode: 1
 part: 1
 chapter: 1
-excerpt: "Test"
+summary: "Test"
 location: "London"
 ---
 
@@ -231,7 +231,7 @@ arc: test-arc
 episode: 1
 part: 1
 chapter: 1
-excerpt: "First episode"
+summary: "First episode"
 location: "London"
 ---
 
@@ -249,7 +249,7 @@ arc: test-arc
 episode: 2
 part: 1
 chapter: 1
-excerpt: "Second episode"
+summary: "Second episode"
 location: "Manchester"
 ---
 

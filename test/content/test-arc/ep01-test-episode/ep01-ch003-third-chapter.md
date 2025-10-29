@@ -7,7 +7,7 @@ arc: test-arc
 episode: 1
 part: 1
 chapter: 3
-excerpt: "The aftermath."
+summary: "The aftermath."
 location: "London"
 ---
 

@@ -7,7 +7,7 @@ arc: test-arc
 episode: 1
 part: 1
 chapter: 2
-excerpt: "A different perspective."
+summary: "A different perspective."
 location: "Manchester"
 ---
 
