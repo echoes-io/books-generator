@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/echoes-io/books-generator/compare/v1.0.1...v1.0.2) (2025-11-03)
+
+
+### Performance Improvements
+
+* :arrow_up: Upped deps ([1e73b45](https://github.com/echoes-io/books-generator/commit/1e73b45ac0d246580592b491dd4633a67d395b0d))
+
 ## [1.0.1](https://github.com/echoes-io/books-generator/compare/v1.0.0...v1.0.1) (2025-10-29)
 
 
