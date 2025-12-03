@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/echoes-io/books-generator/compare/v1.0.2...v1.1.0) (2025-12-03)
+
+
+### Features
+
+* **kiro:** migrate from Amazon Q to Kiro agent configuration ([b47504a](https://github.com/echoes-io/books-generator/commit/b47504a15b91c4b05f0c79a1fe22ab227818005e))
+
 ## [1.0.2](https://github.com/echoes-io/books-generator/compare/v1.0.1...v1.0.2) (2025-11-03)
 
 
