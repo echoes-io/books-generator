@@ -1,7 +1,7 @@
 {
   "name": "@echoes-io/books-generator",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "LaTeX book generation and compilation system for Echoes.io storytelling platform",
   "scripts": {
     "lint": "concurrently npm:lint:* --prefixColors auto",

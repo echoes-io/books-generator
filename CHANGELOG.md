@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/echoes-io/books-generator/compare/v1.1.0...v1.2.0) (2025-12-12)
+
+
+### Features
+
+* rename agent from 'default' to 'dev' and add code tool ([57058c2](https://github.com/echoes-io/books-generator/commit/57058c271d39db3a79bdca6f86bd62227e470cbb))
+
 # [1.1.0](https://github.com/echoes-io/books-generator/compare/v1.0.2...v1.1.0) (2025-12-03)
 
 
