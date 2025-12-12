@@ -1,10 +1,10 @@
 {
-  "name": "default",
+  "name": "dev",
   "description": "Specialized assistant for the Books Generator - LaTeX book compilation system",
   "prompt": "file://../prompts/default-prompt.md",
-  "tools": ["read", "write", "shell", "web_search", "web_fetch", "introspect", "thinking"],
+  "tools": ["read", "write", "shell", "web_search", "web_fetch", "introspect", "thinking", "code"],
   "toolAliases": {},
-  "allowedTools": ["read", "shell", "web_search", "web_fetch", "introspect", "thinking"],
+  "allowedTools": ["read", "shell", "web_search", "web_fetch", "introspect", "thinking", "code"],
   "toolsSettings": {
     "write": {
       "allowedPaths": ["lib/**", "test/**", "templates/**", "*.md", "*.json", "*.ts"]
